@@ -1,0 +1,2 @@
+# dashboard
+SoloWAN Dashboard
