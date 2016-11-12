@@ -1,0 +1,17 @@
+{
+  "name": "Management",
+  "description": "Management module",
+  "author": "Francioso Huertas <francisco@fhuertas.com>",
+  "version": "0.1.0",
+  "dependencies": {
+    "exec": "~0.2.1",
+    "express": "^4.13.3",
+    "body-parser": "~1.14.0"
+  },
+  "engine": "node 0.12.7",
+  "license": "Apache 2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/centeropenmiddleware/solowan.git"
+  }
+}

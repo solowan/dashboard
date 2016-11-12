@@ -1,0 +1,262 @@
+<configuration>
+    <!-- Servers tag -->
+    <servers>
+        <!-- Each server, a server has a port and one or more paths -->
+        <server id="server_id">
+            <!-- Port tag-->
+            <port>5100</port>
+            <!-- Paths tag -->
+            <paths>
+                <!-- path tag, each path has a path and a ws address to connect, if the forwarding commands are allowing and
+                 a list of formulas-->
+                <path id="id1" path="/o1_in" client="ws://o1:4000/in" allow-commands="true">
+                    <!-- formulas tag, each formula has a publish attribute that indicate
+                    if the new variable will be published to the clients connected -->
+                    <formulas>
+                        <!-- the list of formulas
+                         - value.prev: previous value of a variable: parentId, id and steps
+                         - value.time: when a variable was generated.
+                         - mathFormula: a mathematic formula.
+                         - value.before: value after x seconds.
+                         - value.constant: the last value that it was constant.
+                         - value.rename: Put a sufix or prefix of other variable.
+                         - value.reset: the last value that qualified the condition indicate in "atValue"
+                        -->
+                        <value.prev parentId="total_input_bytes.value" id="total_input_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="total_input_bytes.value" id="total_input_bytes.value.time" publish="false"/>
+                        <value.time parentId="total_input_bytes.value.prev" id="total_input_bytes.value.prev.time" publish="false"/>
+
+                        <!-- Velocidad -->
+                        <mathFormula id="total_input_bytes.speed" publish="true">
+                            <var id="total_input_bytes.value.prev" alias="in1"/>
+                            <var id="total_input_bytes.value" alias="in2"/>
+                            <var id="total_input_bytes.value.prev.time" alias="t1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="total_input_bytes.speed" id="total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Velocidad 10 segundos -->
+                        <value.before parentId="total_input_bytes.value" id="total_input_bytes.value.10" time="10000" publish="false"/>
+                        <value.before parentId="total_input_bytes.value.10" id="total_input_bytes.value.10.time" time="10000" publish="false"/>
+
+                        <mathFormula id="total_bytes_ratio.med.10sec" publish="true">
+                            <var id="total_input_bytes.value" alias="in2"/>
+                            <var id="total_input_bytes.value.10" alias="in1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <var id="total_input_bytes.value.10.time" alias="t1"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+
+                        </mathFormula>
+
+                        <!-- Calculate initial time for the last input burst-->
+                        <value.constant parentId="total_input_bytes.value" id="constant_input_bytes.value" publish="false"/>
+                        <value.time parentId="constant_input_bytes.value" id="constant_input_bytes.time" publish="false"/>
+
+                        <!-- Calculate duration for the last input burst -->
+                        <mathFormula id="input_burst.duration" publish="false">
+                            <var id="constant_input_bytes.time" alias="t1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <formula>(t2-t1)/1000</formula>
+                        </mathFormula>
+                        <value.reset parentId="input_burst.duration" id="last_input_burst.duration" atValue="!0" publish="true"/>
+                        <value.rename parentId="last_input_burst.duration" id="last_input_burst.duration_legend" pattern="${VALUE} sec" publish="true"/>
+
+                        <!-- Calculate input bytes for the last burst -->
+                        <mathFormula id="burst_input.size" publish="false">
+                            <var id="constant_input_bytes.value" alias="b1"/>
+                            <var id="total_input_bytes.value" alias="b2"/>
+                            <formula>(b2-b1)</formula>
+                        </mathFormula>
+                        <value.reset parentId="burst_input.size" id="last_burst_input.size" atValue="!0" publish="true"/>
+                        <value.rename parentId="last_burst_input.size" id="last_burst_input.size_legend" pattern="${VALUE} bytes" publish="true"/>
+
+                        <!-- Calculate average input speed for the last burst -->
+                        <mathFormula id="burst_input_average.speed" publish="true">
+                            <var id="last_burst_input.size" alias="b"/>
+                            <var id="last_input_burst.duration" alias="t"/>
+                            <formula>(b*8)/t/10000/100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="burst_input_average.speed" id="burst_input_average.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+
+
+                        <!-- OUTPUT -->
+                        <value.prev parentId="total_output_bytes.value" id="total_output_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="total_output_bytes.value" id="total_output_bytes.value.time" publish="false"/>
+                        <value.time parentId="total_output_bytes.value.prev" id="total_output_bytes.value.prev.time" publish="false"/>
+
+                        <!-- Velocidad -->
+                        <mathFormula id="total_output_bytes.speed" publish="true">
+                            <var id="total_output_bytes.value.prev" alias="in1"/>
+                            <var id="total_output_bytes.value" alias="in2"/>
+                            <var id="total_output_bytes.value.prev.time" alias="t1"/>
+                            <var id="total_output_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="total_output_bytes.speed" id="total_output_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Velocidad 10 segundos -->
+                        <value.before parentId="total_output_bytes.value" id="total_output_bytes.value.10" time="10000" publish="false"/>
+                        <value.before parentId="total_output_bytes.value.10" id="total_output_bytes.value.10.time" time="10000" publish="false"/>
+
+                        <mathFormula id="total_bytes_ratio.med.10sec" publish="true">
+                            <var id="total_output_bytes.value" alias="in2"/>
+                            <var id="total_output_bytes.value.10" alias="in1"/>
+                            <var id="total_output_bytes.value.time" alias="t2"/>
+                            <var id="total_output_bytes.value.10.time" alias="t1"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+
+                        </mathFormula>
+
+                        <!-- Calculate initial time for the last output burst-->
+                        <value.constant parentId="total_output_bytes.value" id="constant_output_bytes.value" publish="false"/>
+                        <value.time parentId="constant_output_bytes.value" id="constant_output_bytes.time" publish="false"/>
+
+                        <!-- Calculate duration for the last output burst -->
+                        <mathFormula id="output_burst.duration" publish="false">
+                            <var id="constant_output_bytes.time" alias="t1"/>
+                            <var id="total_output_bytes.value.time" alias="t2"/>
+                            <formula>(t2-t1)/1000</formula>
+                        </mathFormula>
+                        <value.reset parentId="output_burst.duration" id="last_output_burst.duration" atValue="!0" publish="true"/>
+                        <value.rename parentId="last_output_burst.duration" id="last_output_burst.duration_legend" pattern="${VALUE} sec" publish="true"/>
+
+                        <!-- Calculate output bytes for the last burst -->
+                        <mathFormula id="burst_output.size" publish="false">
+                            <var id="constant_output_bytes.value" alias="b1"/>
+                            <var id="total_output_bytes.value" alias="b2"/>
+                            <formula>(b2-b1)</formula>
+                        </mathFormula>
+                        <value.reset parentId="burst_output.size" id="last_burst_output.size" atValue="!0" publish="true"/>
+                        <value.rename parentId="last_burst_output.size" id="last_burst_output.size_legend" pattern="${VALUE} bytes" publish="true"/>
+
+                        <!-- Calculate average output speed for the last burst -->
+                        <mathFormula id="burst_output_average.speed" publish="true">
+                            <var id="last_burst_output.size" alias="b"/>
+                            <var id="last_output_burst.duration" alias="t"/>
+                            <formula>(b*8)/t/10000/100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="burst_output_average.speed" id="burst_output_average.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+
+
+                        <!-- INPUT/OUTPUT-->
+                        <mathFormula id="total_bytes_ratio" publish="true">
+                            <var id="total_input_bytes.value" alias="in"/>
+                            <var id="total_output_bytes.value" alias="out"/>
+                            <formula>((in*100)/out)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate burst optimization ratio -->
+                        <mathFormula id="burst_optimization.ratio" publish="true">
+                            <var id="last_burst_input.size" alias="in"/>
+                            <var id="last_burst_output.size" alias="out"/>
+                            <formula>(in*100/out)/100.0</formula>
+                        </mathFormula>
+
+
+
+                    </formulas>
+                </path>
+                <path id="id2" path="/o1_out" client="ws://o1:4000/out" allow-commands="true">
+                    <formulas>
+                        <!--<value.time parentId="total_input_bytes.value" id="total_input_bytes.value.time" publish="true"/>-->
+
+                        <!--<value.prev parentId="total_input_bytes.value" id="total_input_bytes.value.prev" step="1" publish="false"/>-->
+                        <!--<value.time parentId="total_input_bytes.value.prev" id="total_input_bytes.value.prev.time" publish="false"/>-->
+                        <!--<value.rename parentId="total_input_bytes.speed" id="total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>-->
+                        <!--<mathFormula id="total_input_bytes.speed" publish="true">-->
+                            <!--<var id="total_input_bytes.value.prev" alias="in1"/>-->
+                            <!--<var id="total_input_bytes.value" alias="in2"/>-->
+                            <!--<var id="total_input_bytes.value.prev.time" alias="t1"/>-->
+                            <!--<var id="total_input_bytes.value.time" alias="t2"/>-->
+                            <!--<formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>-->
+                        <!--</mathFormula>-->
+                        <!--&lt;!&ndash;<value.reset parentId="total_input_bytes.speed" id="total_input_bytes.speed.last0" atValue="=0" publish="true"/>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<value.time parentId="total_input_bytes.speed.last0" id="total_input_bytes.speed.last0.time" publish="true"/>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<value.constant parentId="total_input_bytes.speed.last_constant" id="total_input_bytes.value" publish="true"/>&ndash;&gt;-->
+                        <!--<value.constant parentId="total_input_bytes.value" id="constant_bytes.value" publish="true"/>-->
+
+                        <!--<value.time parentId="constant_bytes.value" id="constant_bytes.value.time" publish="false"/>-->
+
+                        <!--<mathFormula id="tiempo_rafaga" publish="false">-->
+                            <!--<var id="constant_bytes.value.time" alias="t1"/>-->
+                            <!--<var id="total_input_bytes.value.time" alias="t2"/>-->
+                            <!--<formula>(t2 - t1)/1000</formula>-->
+                        <!--</mathFormula>-->
+                        <!--<value.reset parentId="tiempo_rafaga" id="tiempo_rafaga.last" atValue="!0" publish="true"/>-->
+                        <!--<value.rename parentId="tiempo_rafaga.last" id="tiempo_rafaga.last_legend" pattern="${VALUE} sec" publish="true"/>-->
+                    </formulas>
+                </path>
+            </paths>
+        </server>
+        <server>
+            <port>5101</port>
+            <paths>
+                <path id="id3" path="/o2_in" client="ws://o2:4000/in" allow-commands="true">
+                    <formulas>
+                        <!--<value.time parentId="total_input_bytes.value" id="total_input_bytes.value.time" publish="true"/>-->
+
+                        <!--<value.prev parentId="total_input_bytes.value" id="total_input_bytes.value.prev" step="1" publish="false"/>-->
+                        <!--<value.time parentId="total_input_bytes.value.prev" id="total_input_bytes.value.prev.time" publish="false"/>-->
+                        <!--<value.rename parentId="total_input_bytes.speed" id="total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>-->
+                        <!--<mathFormula id="total_input_bytes.speed" publish="true">-->
+                            <!--<var id="total_input_bytes.value.prev" alias="in1"/>-->
+                            <!--<var id="total_input_bytes.value" alias="in2"/>-->
+                            <!--<var id="total_input_bytes.value.prev.time" alias="t1"/>-->
+                            <!--<var id="total_input_bytes.value.time" alias="t2"/>-->
+                            <!--<formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>-->
+                        <!--</mathFormula>-->
+                        <!--&lt;!&ndash;<value.reset parentId="total_input_bytes.speed" id="total_input_bytes.speed.last0" atValue="=0" publish="true"/>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<value.time parentId="total_input_bytes.speed.last0" id="total_input_bytes.speed.last0.time" publish="true"/>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<value.constant parentId="total_input_bytes.speed.last_constant" id="total_input_bytes.value" publish="true"/>&ndash;&gt;-->
+                        <!--<value.constant parentId="total_input_bytes.value" id="constant_bytes.value" publish="true"/>-->
+
+                        <!--<value.time parentId="constant_bytes.value" id="constant_bytes.value.time" publish="false"/>-->
+
+                        <!--<mathFormula id="tiempo_rafaga" publish="true">-->
+                            <!--<var id="constant_bytes.value.time" alias="t1"/>-->
+                            <!--<var id="total_input_bytes.value.time" alias="t2"/>-->
+                            <!--<formula>(t2 - t1)/1000</formula>-->
+                        <!--</mathFormula>-->
+                        <!--<value.reset parentId="tiempo_rafaga" id="tiempo_rafaga.last" atValue="!0" publish="true"/>-->
+                        <!--<value.rename parentId="tiempo_rafaga.last" id="tiempo_rafaga.last_legend" pattern="${VALUE} sec" publish="true"/>-->
+                    </formulas>
+                </path>
+                <path id="id4" path="/o2_out" client="ws://o2:4000/out" allow-commands="true">
+                    <formulas>
+                        <!--<value.time parentId="total_input_bytes.value" id="total_input_bytes.value.time" publish="true"/>-->
+
+                        <!--<value.prev parentId="total_input_bytes.value" id="total_input_bytes.value.prev" step="1" publish="false"/>-->
+                        <!--<value.time parentId="total_input_bytes.value.prev" id="total_input_bytes.value.prev.time" publish="false"/>-->
+                        <!--<value.rename parentId="total_input_bytes.speed" id="total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>-->
+                        <!--<mathFormula id="total_input_bytes.speed" publish="true">-->
+                            <!--<var id="total_input_bytes.value.prev" alias="in1"/>-->
+                            <!--<var id="total_input_bytes.value" alias="in2"/>-->
+                            <!--<var id="total_input_bytes.value.prev.time" alias="t1"/>-->
+                            <!--<var id="total_input_bytes.value.time" alias="t2"/>-->
+                            <!--<formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>-->
+                        <!--</mathFormula>-->
+                        <!--&lt;!&ndash;<value.reset parentId="total_input_bytes.speed" id="total_input_bytes.speed.last0" atValue="=0" publish="true"/>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<value.time parentId="total_input_bytes.speed.last0" id="total_input_bytes.speed.last0.time" publish="true"/>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<value.constant parentId="total_input_bytes.speed.last_constant" id="total_input_bytes.value" publish="true"/>&ndash;&gt;-->
+                        <!--<value.constant parentId="total_input_bytes.value" id="constant_bytes.value" publish="true"/>-->
+
+                        <!--<value.time parentId="constant_bytes.value" id="constant_bytes.value.time" publish="false"/>-->
+
+                        <!--<mathFormula id="tiempo_rafaga" publish="true">-->
+                            <!--<var id="constant_bytes.value.time" alias="t1"/>-->
+                            <!--<var id="total_input_bytes.value.time" alias="t2"/>-->
+                            <!--<formula>(t2 - t1)/1000</formula>-->
+                        <!--</mathFormula>-->
+                        <!--<value.reset parentId="tiempo_rafaga" id="tiempo_rafaga.last" atValue="!0" publish="true"/>-->
+                        <!--<value.rename parentId="tiempo_rafaga.last" id="tiempo_rafaga.last_legend" pattern="${VALUE} sec" publish="true"/>-->
+                    </formulas>
+                </path>
+            </paths>
+        </server>
+
+    </servers>
+
+</configuration>

@@ -1,0 +1,29 @@
+{
+  "port": 4000,
+  "serverConnections" :[
+    {
+      "path": "/in",
+      "commands": {
+        "total_input_bytes.value": {
+          "command": "opennop show stats in_dedup | grep -v '-' | sed -n '2p' | tr -s ' ' | cut -d' ' -f2"
+        },
+        "total_output_bytes.value": {
+          "command": "opennop show stats in_dedup | grep -v '-' | sed -n '3p' | tr -s ' ' | cut -d' ' -f2"
+        }
+      }
+    },
+    {
+      "path": "/out",
+      "commands": {
+        "total_input_bytes.value": {
+          "command": "opennop show stats out_dedup | grep -v '-' | sed -n '2p'| tr -s ' ' | cut -d' ' -f2"
+        },
+        "total_output_bytes.value": {
+          "command": "opennop show stats out_dedup | grep -v '-' | sed -n '3p'| tr -s ' ' | cut -d' ' -f2"
+        }
+      }
+    }
+  ],
+  "timeout":"1000",
+  "logfile" : "/var/log/collector.log"
+}
