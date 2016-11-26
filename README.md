@@ -7,4 +7,4 @@ SoloWAN is an enhanced version of the Open Network Optimization Platform (OpenNO
 
 SoloWAN is a project of the Center for Open Middleware (COM) of Universidad Politécnica de Madrid which aims to experiment with open-source based WAN optimization solutions.
 
-The documentation can be consulted on the SoloWAN Dashboard project wiki. 
+The documentation can be consulted on the [SoloWAN Dashboard project wiki](https://github.com/solowan/dashboard/wiki). 
