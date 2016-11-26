@@ -1,7 +1,7 @@
 # SoloWAN Dashboard
 
 This repository contains the dashboard of the [SoloWAN project](https://github.com/centeropenmiddleware/solowan) which allows you to gather visual results of the optimized traffic by SoloWAN optimizers. The reference image of the architecture is the following (although it can be modified according to the needs):
-![](https://raw.githubusercontent.com/centeropenmiddleware/solowan-dashboard/master/images/ReferenceImage.jpg)
+![](https://github.com/solowan/dashboard/blob/master/images/ReferenceImage.jpg?raw=true)
 
 SoloWAN is an enhanced version of the Open Network Optimization Platform (OpenNOP). It implements a modern dictionary based compression algorithm to add deduplication capabilities to OpenNOP. 
 
