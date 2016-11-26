@@ -1,0 +1,602 @@
+<configuration>
+    <servers>
+        <server id="">
+            <port>5100</port>
+            <paths>
+                <path id="id1" path="/o1_LtW" client="ws://o1:4000/LtW" allow-commands="true">
+                    <formulas>
+                        <!-- INPUT -->
+                        <!-- Speed -->
+                        <value.time parentId="total_input_bytes.value" id="total_input_bytes.value.time" publish="false"/>
+                        <value.prev parentId="total_input_bytes.value" id="total_input_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="total_input_bytes.value.prev" id="total_input_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="total_input_bytes.speed" publish="false">
+                            <var id="total_input_bytes.value.prev" alias="in1"/>
+                            <var id="total_input_bytes.value" alias="in2"/>
+                            <var id="total_input_bytes.value.prev.time" alias="t1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="total_input_bytes.speed" id="total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Speed (iptables) -->
+                        <value.time parentId="ipt_total_input_bytes_value" id="ipt_total_input_bytes.value.time" publish="false"/>
+                        <value.prev parentId="ipt_total_input_bytes_value" id="ipt_total_input_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="ipt_total_input_bytes.value.prev" id="ipt_total_input_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="ipt_total_input_bytes.speed" publish="false">
+                            <var id="ipt_total_input_bytes.value.prev" alias="in1"/>
+                            <var id="ipt_total_input_bytes_value" alias="in2"/>
+                            <var id="ipt_total_input_bytes.value.prev.time" alias="t1"/>
+                            <var id="ipt_total_input_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="ipt_total_input_bytes.speed" id="ipt_total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Calculate initial time for the last input burst -->
+                        <value.constant parentId="total_input_bytes.value" id="constant_input_bytes.value" publish="false"/>
+                        <value.time parentId="constant_input_bytes.value" id="constant_input_bytes.time" publish="false"/>
+
+                        <!-- Calculate input bytes for the last burst -->
+                        <mathFormula id="burst_input.size" publish="false">
+                            <var id="constant_input_bytes.value" alias="b1"/>
+                            <var id="total_input_bytes.value" alias="b2"/>
+                            <formula>(b2-b1)</formula>
+                        </mathFormula>
+                        <value.reset parentId="burst_input.size" id="last_burst_input.size" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_burst_input.size" id="last_burst_input.size_legend" pattern="${VALUE} bytes" publish="true"/>
+
+                        <!-- Calculate average input speed for the last burst -->
+                        <mathFormula id="burst_input_average.speed" publish="false">
+                            <var id="last_burst_input.size" alias="b"/>
+                            <var id="last_input_burst.duration" alias="t"/>
+                            <formula>(b*8)/t/10000/100.0</formula>
+                        </mathFormula>               
+                        <value.rename parentId="burst_input_average.speed" id="burst_input_average.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- OUTPUT -->
+                        <!-- Speed -->
+                        <value.time parentId="total_output_bytes.value" id="total_output_bytes.value.time" publish="false"/>
+                        <value.prev parentId="total_output_bytes.value" id="total_output_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="total_output_bytes.value.prev" id="total_output_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="total_output_bytes.speed" publish="false">
+                            <var id="total_output_bytes.value.prev" alias="in1"/>
+                            <var id="total_output_bytes.value" alias="in2"/>
+                            <var id="total_output_bytes.value.prev.time" alias="t1"/>
+                            <var id="total_output_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="total_output_bytes.speed" id="total_output_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Speed (iptables) -->
+                        <value.time parentId="ipt_total_output_bytes_value" id="ipt_total_output_bytes.value.time" publish="false"/>
+                        <value.prev parentId="ipt_total_output_bytes_value" id="ipt_total_output_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="ipt_total_output_bytes.value.prev" id="ipt_total_output_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="ipt_total_output_bytes.speed" publish="false">
+                            <var id="ipt_total_output_bytes.value.prev" alias="in1"/>
+                            <var id="ipt_total_output_bytes_value" alias="in2"/>
+                            <var id="ipt_total_output_bytes.value.prev.time" alias="t1"/>
+                            <var id="ipt_total_output_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="ipt_total_output_bytes.speed" id="ipt_total_output_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Calculate initial time for the last output burst -->
+                        <value.constant parentId="total_output_bytes.value" id="constant_output_bytes.value" publish="false"/>
+                        <value.time parentId="constant_output_bytes.value" id="constant_output_bytes.time" publish="false"/>
+
+                        <!-- Calculate output bytes for the last burst -->
+                        <mathFormula id="burst_output.size" publish="false">
+                            <var id="constant_output_bytes.value" alias="b1"/>
+                            <var id="total_output_bytes.value" alias="b2"/>
+                            <formula>(b2-b1)</formula>
+                        </mathFormula>
+                        <value.reset parentId="burst_output.size" id="last_burst_output.size" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_burst_output.size" id="last_burst_output.size_legend" pattern="${VALUE} bytes" publish="true"/>
+
+                        <!-- Calculate average output speed for the last burst -->
+                        <mathFormula id="burst_output_average.speed" publish="false">
+                            <var id="last_burst_output.size" alias="b"/>
+                            <var id="last_input_burst.duration" alias="t"/>
+                            <formula>(b*8)/t/10000/100.0</formula>
+                        </mathFormula>                               
+                        <value.rename parentId="burst_output_average.speed" id="burst_output_average.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- GLOBAL -->
+                        <!-- Calculate total optimization ratio -->
+                        <mathFormula id="total_bytes_ratio" publish="true">
+                            <var id="total_input_bytes.value" alias="in"/>
+                            <var id="total_output_bytes.value" alias="out"/>
+                            <formula>((in*100)/out)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate total optimization ratio (iptables) -->
+                        <mathFormula id="ipt_total_bytes_ratio" publish="true">
+                            <var id="ipt_total_input_bytes_value" alias="in"/>
+                            <var id="ipt_total_output_bytes_value" alias="out"/>
+                            <formula>((in*100)/out)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate duration for the last input burst (based on input values) -->
+                        <mathFormula id="input_burst.duration" publish="false">
+                            <var id="constant_input_bytes.time" alias="t1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <formula>(t2-t1)/1000</formula>
+                        </mathFormula>
+                        <value.reset parentId="input_burst.duration" id="last_input_burst.duration" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_input_burst.duration" id="last_input_burst.duration_legend" pattern="${VALUE} sec" publish="true"/>
+
+                        <!-- Calculate burst optimization ratio -->
+                        <mathFormula id="burst_optimization.ratio" publish="true">
+                            <var id="last_burst_input.size" alias="in"/>
+                            <var id="last_burst_output.size" alias="out"/>
+                            <formula>(in*100/out)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate compressed ratio -->
+                        <mathFormula id="compressed.ratio" publish="false">
+                            <var id="comp_bytes.value" alias="comp"/>
+                            <var id="dedup_bytes.value" alias="dedup"/>
+                            <formula>(comp*100)/(comp+dedup)</formula>
+                        </mathFormula>
+                        <value.rename parentId="compressed.ratio" id="compressed.ratio_legend" pattern="${VALUE} %" publish="true"/>
+
+                        <!-- Calculate deduplicated ratio -->
+                        <mathFormula id="deduplicated.ratio" publish="false">
+                            <var id="comp_bytes.value" alias="comp"/>
+                            <var id="dedup_bytes.value" alias="dedup"/>
+                            <formula>(dedup*100)/(comp+dedup)</formula>
+                        </mathFormula>
+                        <value.rename parentId="deduplicated.ratio" id="deduplicated.ratio_legend" pattern="${VALUE} %" publish="true"/>
+                    </formulas>
+                </path>
+                <path id="id2" path="/o1_WtL" client="ws://o1:4000/WtL" allow-commands="true">
+                    <formulas>
+                        <!-- INPUT -->
+                        <!-- Speed -->
+                        <value.time parentId="total_input_bytes.value" id="total_input_bytes.value.time" publish="false"/>
+                        <value.prev parentId="total_input_bytes.value" id="total_input_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="total_input_bytes.value.prev" id="total_input_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="total_input_bytes.speed" publish="false">
+                            <var id="total_input_bytes.value.prev" alias="in1"/>
+                            <var id="total_input_bytes.value" alias="in2"/>
+                            <var id="total_input_bytes.value.prev.time" alias="t1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="total_input_bytes.speed" id="total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Speed (iptables) -->
+                        <value.time parentId="ipt_total_input_bytes_value" id="ipt_total_input_bytes.value.time" publish="false"/>
+                        <value.prev parentId="ipt_total_input_bytes_value" id="ipt_total_input_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="ipt_total_input_bytes.value.prev" id="ipt_total_input_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="ipt_total_input_bytes.speed" publish="false">
+                            <var id="ipt_total_input_bytes.value.prev" alias="in1"/>
+                            <var id="ipt_total_input_bytes_value" alias="in2"/>
+                            <var id="ipt_total_input_bytes.value.prev.time" alias="t1"/>
+                            <var id="ipt_total_input_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="ipt_total_input_bytes.speed" id="ipt_total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Calculate initial time for the last input burst -->
+                        <value.constant parentId="total_input_bytes.value" id="constant_input_bytes.value" publish="false"/>
+                        <value.time parentId="constant_input_bytes.value" id="constant_input_bytes.time" publish="false"/>
+
+                        <!-- Calculate input bytes for the last burst -->
+                        <mathFormula id="burst_input.size" publish="false">
+                            <var id="constant_input_bytes.value" alias="b1"/>
+                            <var id="total_input_bytes.value" alias="b2"/>
+                            <formula>(b2-b1)</formula>
+                        </mathFormula>
+                        <value.reset parentId="burst_input.size" id="last_burst_input.size" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_burst_input.size" id="last_burst_input.size_legend" pattern="${VALUE} bytes" publish="true"/>
+
+                        <!-- Calculate average input speed for the last burst -->
+                        <mathFormula id="burst_input_average.speed" publish="false">
+                            <var id="last_burst_input.size" alias="b"/>
+                            <var id="last_input_burst.duration" alias="t"/>
+                            <formula>(b*8)/t/10000/100.0</formula>
+                        </mathFormula>               
+                        <value.rename parentId="burst_input_average.speed" id="burst_input_average.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- OUTPUT -->
+                        <!-- Speed -->
+                        <value.time parentId="total_output_bytes.value" id="total_output_bytes.value.time" publish="false"/>
+                        <value.prev parentId="total_output_bytes.value" id="total_output_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="total_output_bytes.value.prev" id="total_output_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="total_output_bytes.speed" publish="false">
+                            <var id="total_output_bytes.value.prev" alias="in1"/>
+                            <var id="total_output_bytes.value" alias="in2"/>
+                            <var id="total_output_bytes.value.prev.time" alias="t1"/>
+                            <var id="total_output_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="total_output_bytes.speed" id="total_output_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Speed (iptables) -->
+                        <value.time parentId="ipt_total_output_bytes_value" id="ipt_total_output_bytes.value.time" publish="false"/>
+                        <value.prev parentId="ipt_total_output_bytes_value" id="ipt_total_output_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="ipt_total_output_bytes.value.prev" id="ipt_total_output_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="ipt_total_output_bytes.speed" publish="false">
+                            <var id="ipt_total_output_bytes.value.prev" alias="in1"/>
+                            <var id="ipt_total_output_bytes_value" alias="in2"/>
+                            <var id="ipt_total_output_bytes.value.prev.time" alias="t1"/>
+                            <var id="ipt_total_output_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="ipt_total_output_bytes.speed" id="ipt_total_output_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Calculate initial time for the last output burst -->
+                        <value.constant parentId="total_output_bytes.value" id="constant_output_bytes.value" publish="false"/>
+                        <value.time parentId="constant_output_bytes.value" id="constant_output_bytes.time" publish="false"/>
+
+                        <!-- Calculate output bytes for the last burst -->
+                        <mathFormula id="burst_output.size" publish="false">
+                            <var id="constant_output_bytes.value" alias="b1"/>
+                            <var id="total_output_bytes.value" alias="b2"/>
+                            <formula>(b2-b1)</formula>
+                        </mathFormula>
+                        <value.reset parentId="burst_output.size" id="last_burst_output.size" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_burst_output.size" id="last_burst_output.size_legend" pattern="${VALUE} bytes" publish="true"/>
+
+                        <!-- Calculate average output speed for the last burst -->
+                        <mathFormula id="burst_output_average.speed" publish="false">
+                            <var id="last_burst_output.size" alias="b"/>
+                            <var id="last_input_burst.duration" alias="t"/>
+                            <formula>(b*8)/t/10000/100.0</formula>
+                        </mathFormula>                               
+                        <value.rename parentId="burst_output_average.speed" id="burst_output_average.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- GLOBAL -->
+                        <!-- Calculate total optimization ratio -->
+                        <mathFormula id="total_bytes_ratio" publish="true">
+                            <var id="total_input_bytes.value" alias="in"/>
+                            <var id="total_output_bytes.value" alias="out"/>
+                            <formula>((out*100)/in)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate total optimization ratio (iptables) -->
+                        <mathFormula id="ipt_total_bytes_ratio" publish="true">
+                            <var id="ipt_total_input_bytes_value" alias="in"/>
+                            <var id="ipt_total_output_bytes_value" alias="out"/>
+                            <formula>((out*100)/in)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate duration for the last input burst (based on input values) -->
+                        <mathFormula id="input_burst.duration" publish="false">
+                            <var id="constant_input_bytes.time" alias="t1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <formula>(t2-t1)/1000</formula>
+                        </mathFormula>
+                        <value.reset parentId="input_burst.duration" id="last_input_burst.duration" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_input_burst.duration" id="last_input_burst.duration_legend" pattern="${VALUE} sec" publish="true"/>
+
+                        <!-- Calculate burst optimization ratio -->
+                        <mathFormula id="burst_optimization.ratio" publish="true">
+                            <var id="last_burst_input.size" alias="in"/>
+                            <var id="last_burst_output.size" alias="out"/>
+                            <formula>(out*100/in)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate compressed ratio -->
+                        <mathFormula id="compressed.ratio" publish="false">
+                            <var id="comp_bytes.value" alias="comp"/>
+                            <var id="dedup_bytes.value" alias="dedup"/>
+                            <formula>(comp*100)/(comp+dedup)</formula>
+                        </mathFormula>
+                        <value.rename parentId="compressed.ratio" id="compressed.ratio_legend" pattern="${VALUE} %" publish="true"/>
+
+                        <!-- Calculate deduplicated ratio -->
+                        <mathFormula id="deduplicated.ratio" publish="false">
+                            <var id="comp_bytes.value" alias="comp"/>
+                            <var id="dedup_bytes.value" alias="dedup"/>
+                            <formula>(dedup*100)/(comp+dedup)</formula>
+                        </mathFormula>
+                        <value.rename parentId="deduplicated.ratio" id="deduplicated.ratio_legend" pattern="${VALUE} %" publish="true"/>
+                    </formulas>
+                </path>
+                <path id="id3" path="/o1_vmstat" client="ws://o1:4000/vmstat" allow-commands="false">
+                </path>
+            </paths>
+        </server>
+        <server>
+            <port>5101</port>
+            <paths>
+                <path id="id4" path="/o2_LtW" client="ws://o2:4000/LtW" allow-commands="true">
+                    <formulas>
+                        <!-- INPUT -->
+                        <!-- Speed -->
+                        <value.time parentId="total_input_bytes.value" id="total_input_bytes.value.time" publish="false"/>
+                        <value.prev parentId="total_input_bytes.value" id="total_input_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="total_input_bytes.value.prev" id="total_input_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="total_input_bytes.speed" publish="false">
+                            <var id="total_input_bytes.value.prev" alias="in1"/>
+                            <var id="total_input_bytes.value" alias="in2"/>
+                            <var id="total_input_bytes.value.prev.time" alias="t1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="total_input_bytes.speed" id="total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Speed (iptables) -->
+                        <value.time parentId="ipt_total_input_bytes_value" id="ipt_total_input_bytes.value.time" publish="false"/>
+                        <value.prev parentId="ipt_total_input_bytes_value" id="ipt_total_input_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="ipt_total_input_bytes.value.prev" id="ipt_total_input_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="ipt_total_input_bytes.speed" publish="false">
+                            <var id="ipt_total_input_bytes.value.prev" alias="in1"/>
+                            <var id="ipt_total_input_bytes_value" alias="in2"/>
+                            <var id="ipt_total_input_bytes.value.prev.time" alias="t1"/>
+                            <var id="ipt_total_input_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="ipt_total_input_bytes.speed" id="ipt_total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Calculate initial time for the last input burst -->
+                        <value.constant parentId="total_input_bytes.value" id="constant_input_bytes.value" publish="false"/>
+                        <value.time parentId="constant_input_bytes.value" id="constant_input_bytes.time" publish="false"/>
+
+                        <!-- Calculate input bytes for the last burst -->
+                        <mathFormula id="burst_input.size" publish="false">
+                            <var id="constant_input_bytes.value" alias="b1"/>
+                            <var id="total_input_bytes.value" alias="b2"/>
+                            <formula>(b2-b1)</formula>
+                        </mathFormula>
+                        <value.reset parentId="burst_input.size" id="last_burst_input.size" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_burst_input.size" id="last_burst_input.size_legend" pattern="${VALUE} bytes" publish="true"/>
+
+                        <!-- Calculate average input speed for the last burst -->
+                        <mathFormula id="burst_input_average.speed" publish="false">
+                            <var id="last_burst_input.size" alias="b"/>
+                            <var id="last_input_burst.duration" alias="t"/>
+                            <formula>(b*8)/t/10000/100.0</formula>
+                        </mathFormula>               
+                        <value.rename parentId="burst_input_average.speed" id="burst_input_average.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- OUTPUT -->
+                        <!-- Speed -->
+                        <value.time parentId="total_output_bytes.value" id="total_output_bytes.value.time" publish="false"/>
+                        <value.prev parentId="total_output_bytes.value" id="total_output_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="total_output_bytes.value.prev" id="total_output_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="total_output_bytes.speed" publish="false">
+                            <var id="total_output_bytes.value.prev" alias="in1"/>
+                            <var id="total_output_bytes.value" alias="in2"/>
+                            <var id="total_output_bytes.value.prev.time" alias="t1"/>
+                            <var id="total_output_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="total_output_bytes.speed" id="total_output_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Speed (iptables) -->
+                        <value.time parentId="ipt_total_output_bytes_value" id="ipt_total_output_bytes.value.time" publish="false"/>
+                        <value.prev parentId="ipt_total_output_bytes_value" id="ipt_total_output_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="ipt_total_output_bytes.value.prev" id="ipt_total_output_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="ipt_total_output_bytes.speed" publish="false">
+                            <var id="ipt_total_output_bytes.value.prev" alias="in1"/>
+                            <var id="ipt_total_output_bytes_value" alias="in2"/>
+                            <var id="ipt_total_output_bytes.value.prev.time" alias="t1"/>
+                            <var id="ipt_total_output_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="ipt_total_output_bytes.speed" id="ipt_total_output_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Calculate initial time for the last output burst -->
+                        <value.constant parentId="total_output_bytes.value" id="constant_output_bytes.value" publish="false"/>
+                        <value.time parentId="constant_output_bytes.value" id="constant_output_bytes.time" publish="false"/>
+
+                        <!-- Calculate output bytes for the last burst -->
+                        <mathFormula id="burst_output.size" publish="false">
+                            <var id="constant_output_bytes.value" alias="b1"/>
+                            <var id="total_output_bytes.value" alias="b2"/>
+                            <formula>(b2-b1)</formula>
+                        </mathFormula>
+                        <value.reset parentId="burst_output.size" id="last_burst_output.size" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_burst_output.size" id="last_burst_output.size_legend" pattern="${VALUE} bytes" publish="true"/>
+
+                        <!-- Calculate average output speed for the last burst -->
+                        <mathFormula id="burst_output_average.speed" publish="false">
+                            <var id="last_burst_output.size" alias="b"/>
+                            <var id="last_input_burst.duration" alias="t"/>
+                            <formula>(b*8)/t/10000/100.0</formula>
+                        </mathFormula>                               
+                        <value.rename parentId="burst_output_average.speed" id="burst_output_average.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- GLOBAL -->
+                        <!-- Calculate total optimization ratio -->
+                        <mathFormula id="total_bytes_ratio" publish="true">
+                            <var id="total_input_bytes.value" alias="in"/>
+                            <var id="total_output_bytes.value" alias="out"/>
+                            <formula>((in*100)/out)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate total optimization ratio (iptables) -->
+                        <mathFormula id="ipt_total_bytes_ratio" publish="true">
+                            <var id="ipt_total_input_bytes_value" alias="in"/>
+                            <var id="ipt_total_output_bytes_value" alias="out"/>
+                            <formula>((in*100)/out)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate duration for the last input burst (based on input values) -->
+                        <mathFormula id="input_burst.duration" publish="false">
+                            <var id="constant_input_bytes.time" alias="t1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <formula>(t2-t1)/1000</formula>
+                        </mathFormula>
+                        <value.reset parentId="input_burst.duration" id="last_input_burst.duration" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_input_burst.duration" id="last_input_burst.duration_legend" pattern="${VALUE} sec" publish="true"/>
+
+                        <!-- Calculate burst optimization ratio -->
+                        <mathFormula id="burst_optimization.ratio" publish="true">
+                            <var id="last_burst_input.size" alias="in"/>
+                            <var id="last_burst_output.size" alias="out"/>
+                            <formula>(in*100/out)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate compressed ratio -->
+                        <mathFormula id="compressed.ratio" publish="false">
+                            <var id="comp_bytes.value" alias="comp"/>
+                            <var id="dedup_bytes.value" alias="dedup"/>
+                            <formula>(comp*100)/(comp+dedup)</formula>
+                        </mathFormula>
+                        <value.rename parentId="compressed.ratio" id="compressed.ratio_legend" pattern="${VALUE} %" publish="true"/>
+
+                        <!-- Calculate deduplicated ratio -->
+                        <mathFormula id="deduplicated.ratio" publish="false">
+                            <var id="comp_bytes.value" alias="comp"/>
+                            <var id="dedup_bytes.value" alias="dedup"/>
+                            <formula>(dedup*100)/(comp+dedup)</formula>
+                        </mathFormula>
+                        <value.rename parentId="deduplicated.ratio" id="deduplicated.ratio_legend" pattern="${VALUE} %" publish="true"/>
+                    </formulas>
+                </path>
+                <path id="id5" path="/o2_WtL" client="ws://o2:4000/WtL" allow-commands="true">
+                    <formulas>
+                        <!-- INPUT -->
+                        <!-- Speed -->
+                        <value.time parentId="total_input_bytes.value" id="total_input_bytes.value.time" publish="false"/>
+                        <value.prev parentId="total_input_bytes.value" id="total_input_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="total_input_bytes.value.prev" id="total_input_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="total_input_bytes.speed" publish="false">
+                            <var id="total_input_bytes.value.prev" alias="in1"/>
+                            <var id="total_input_bytes.value" alias="in2"/>
+                            <var id="total_input_bytes.value.prev.time" alias="t1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="total_input_bytes.speed" id="total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Speed (iptables) -->
+                        <value.time parentId="ipt_total_input_bytes_value" id="ipt_total_input_bytes.value.time" publish="false"/>
+                        <value.prev parentId="ipt_total_input_bytes_value" id="ipt_total_input_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="ipt_total_input_bytes.value.prev" id="ipt_total_input_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="ipt_total_input_bytes.speed" publish="false">
+                            <var id="ipt_total_input_bytes.value.prev" alias="in1"/>
+                            <var id="ipt_total_input_bytes_value" alias="in2"/>
+                            <var id="ipt_total_input_bytes.value.prev.time" alias="t1"/>
+                            <var id="ipt_total_input_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="ipt_total_input_bytes.speed" id="ipt_total_input_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Calculate initial time for the last input burst -->
+                        <value.constant parentId="total_input_bytes.value" id="constant_input_bytes.value" publish="false"/>
+                        <value.time parentId="constant_input_bytes.value" id="constant_input_bytes.time" publish="false"/>
+
+                        <!-- Calculate input bytes for the last burst -->
+                        <mathFormula id="burst_input.size" publish="false">
+                            <var id="constant_input_bytes.value" alias="b1"/>
+                            <var id="total_input_bytes.value" alias="b2"/>
+                            <formula>(b2-b1)</formula>
+                        </mathFormula>
+                        <value.reset parentId="burst_input.size" id="last_burst_input.size" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_burst_input.size" id="last_burst_input.size_legend" pattern="${VALUE} bytes" publish="true"/>
+
+                        <!-- Calculate average input speed for the last burst -->
+                        <mathFormula id="burst_input_average.speed" publish="false">
+                            <var id="last_burst_input.size" alias="b"/>
+                            <var id="last_input_burst.duration" alias="t"/>
+                            <formula>(b*8)/t/10000/100.0</formula>
+                        </mathFormula>               
+                        <value.rename parentId="burst_input_average.speed" id="burst_input_average.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- OUTPUT -->
+                        <!-- Speed -->
+                        <value.time parentId="total_output_bytes.value" id="total_output_bytes.value.time" publish="false"/>
+                        <value.prev parentId="total_output_bytes.value" id="total_output_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="total_output_bytes.value.prev" id="total_output_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="total_output_bytes.speed" publish="false">
+                            <var id="total_output_bytes.value.prev" alias="in1"/>
+                            <var id="total_output_bytes.value" alias="in2"/>
+                            <var id="total_output_bytes.value.prev.time" alias="t1"/>
+                            <var id="total_output_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="total_output_bytes.speed" id="total_output_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Speed (iptables) -->
+                        <value.time parentId="ipt_total_output_bytes_value" id="ipt_total_output_bytes.value.time" publish="false"/>
+                        <value.prev parentId="ipt_total_output_bytes_value" id="ipt_total_output_bytes.value.prev" step="1" publish="false"/>
+                        <value.time parentId="ipt_total_output_bytes.value.prev" id="ipt_total_output_bytes.value.prev.time" publish="false"/>
+                        <mathFormula id="ipt_total_output_bytes.speed" publish="false">
+                            <var id="ipt_total_output_bytes.value.prev" alias="in1"/>
+                            <var id="ipt_total_output_bytes_value" alias="in2"/>
+                            <var id="ipt_total_output_bytes.value.prev.time" alias="t1"/>
+                            <var id="ipt_total_output_bytes.value.time" alias="t2"/>
+                            <formula>((in2 - in1 ) * 100 / (t2-t1) * 8 / 1000) / 100.0</formula>
+                        </mathFormula>
+                        <value.rename parentId="ipt_total_output_bytes.speed" id="ipt_total_output_bytes.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- Calculate initial time for the last output burst -->
+                        <value.constant parentId="total_output_bytes.value" id="constant_output_bytes.value" publish="false"/>
+                        <value.time parentId="constant_output_bytes.value" id="constant_output_bytes.time" publish="false"/>
+
+                        <!-- Calculate output bytes for the last burst -->
+                        <mathFormula id="burst_output.size" publish="false">
+                            <var id="constant_output_bytes.value" alias="b1"/>
+                            <var id="total_output_bytes.value" alias="b2"/>
+                            <formula>(b2-b1)</formula>
+                        </mathFormula>
+                        <value.reset parentId="burst_output.size" id="last_burst_output.size" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_burst_output.size" id="last_burst_output.size_legend" pattern="${VALUE} bytes" publish="true"/>
+
+                        <!-- Calculate average output speed for the last burst -->
+                        <mathFormula id="burst_output_average.speed" publish="false">
+                            <var id="last_burst_output.size" alias="b"/>
+                            <var id="last_input_burst.duration" alias="t"/>
+                            <formula>(b*8)/t/10000/100.0</formula>
+                        </mathFormula>                               
+                        <value.rename parentId="burst_output_average.speed" id="burst_output_average.speed_legend" pattern="${VALUE} Mbps" publish="true"/>
+
+                        <!-- GLOBAL -->
+                        <!-- Calculate total optimization ratio -->
+                        <mathFormula id="total_bytes_ratio" publish="true">
+                            <var id="total_input_bytes.value" alias="in"/>
+                            <var id="total_output_bytes.value" alias="out"/>
+                            <formula>((out*100)/in)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate total optimization ratio (iptables) -->
+                        <mathFormula id="ipt_total_bytes_ratio" publish="true">
+                            <var id="ipt_total_input_bytes_value" alias="in"/>
+                            <var id="ipt_total_output_bytes_value" alias="out"/>
+                            <formula>((out*100)/in)/100.0</formula>
+                        </mathFormula>
+
+                        <!-- Calculate duration for the last input burst (based on input values) -->
+                        <mathFormula id="input_burst.duration" publish="false">
+                            <var id="constant_input_bytes.time" alias="t1"/>
+                            <var id="total_input_bytes.value.time" alias="t2"/>
+                            <formula>(t2-t1)/1000</formula>
+                        </mathFormula>
+                        <value.reset parentId="input_burst.duration" id="last_input_burst.duration" atValue="!0" publish="false"/>
+                        <value.rename parentId="last_input_burst.duration" id="last_input_burst.duration_legend" pattern="${VALUE} sec" publish="true"/>
+
+                        <!-- Calculate burst optimization ratio -->
+                        <mathFormula id="burst_optimization.ratio" publish="true">
+                            <var id="last_burst_input.size" alias="in"/>
+                            <var id="last_burst_output.size" alias="out"/>
+                            <formula>(out*100/in)/100.0</formula>
+                        </mathFormula>
+                        
+                        <!-- Calculate compressed ratio -->
+                        <mathFormula id="compressed.ratio" publish="false">
+                            <var id="comp_bytes.value" alias="comp"/>
+                            <var id="dedup_bytes.value" alias="dedup"/>
+                            <formula>(comp*100)/(comp+dedup)</formula>
+                        </mathFormula>
+                        <value.rename parentId="compressed.ratio" id="compressed.ratio_legend" pattern="${VALUE} %" publish="true"/>
+
+                        <!-- Calculate deduplicated ratio -->
+                        <mathFormula id="deduplicated.ratio" publish="false">
+                            <var id="comp_bytes.value" alias="comp"/>
+                            <var id="dedup_bytes.value" alias="dedup"/>
+                            <formula>(dedup*100)/(comp+dedup)</formula>
+                        </mathFormula>
+                        <value.rename parentId="deduplicated.ratio" id="deduplicated.ratio_legend" pattern="${VALUE} %" publish="true"/>
+                    </formulas>
+                </path>
+                <path id="id6" path="/o2_vmstat" client="ws://o2:4000/vmstat" allow-commands="false">
+                </path>
+            </paths>
+        </server>
+    </servers>
+</configuration>

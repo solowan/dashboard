@@ -1,0 +1,52 @@
+textoAmostrar {
+        font: bold 50px arial;
+        margin: auto;
+        padding: 10px;
+        text-align: center;
+      }
+
+.template {
+    display: none !important;
+}
+* {
+  cursor: default;
+}
+body {
+    background-color: #333;
+    color: #eee;
+    font-family: "helvetica neue", helvetica, arial, sans-serif;
+}
+h2 {
+    margin: 40px 0 0 0;
+    font-weight: 300;
+}
+main {
+    width: 600px;
+    margin: auto;
+}
+section {
+    clear: left;
+}
+.stats {
+    margin: 0;
+}
+.stat {
+    list-style-type: none;
+    float: left;
+    margin: 5px;
+    /*width: 130px;*/
+    font-size: 12px;
+}
+.stat-name {
+    display: inline-block;
+    text-align: left;
+    margin: 0 auto;
+    margin-right: 5px;
+}
+.stat-value {
+    margin: 0 auto;
+    font-weight: bold;
+}
+.title{
+    text-align: center;
+}

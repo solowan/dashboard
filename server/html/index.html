@@ -1,0 +1,238 @@
+<!--
+  ~ Copyright (c) 2015 Center for Open Middleware
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE html>
+<html lang="en" ng-app="dashboard-app">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SoloWAN Dashboard</title>
+    
+    <!-- Smoothie Charts CSS -->   
+    <link href="css/stats.css" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="css/plugins/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="css/plugins/timeline.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="css/plugins/morris.css" rel="stylesheet">
+    <link href="css/dashboard.css" rel="stylesheet">
+
+    <!-- context Menu-->
+    <!--<link href="css/jquery.contextMenu.css" rel="stylesheet" type="text/css">-->
+    <!--<link href="css/context.bootstrap.css" rel="stylesheet" type="text/css">-->
+    <link href="css/context.standalone.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="js/lib/angular.min.js"></script>
+</head>
+
+<body ng-controller="dashboard-ctrl">
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#" onclick="change_view(views.index)">SoloWAN Dashboard</a>
+            </div>
+            <!-- /.navbar-header -->
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <!-- /.dropdown-tasks -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <!-- /.dropdown-alerts -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">              
+                        <li>
+                            <a href="index.html" class="view-link"><i class="fa fa-dashboard fa-fw"></i>Home</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Real-time<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level" id="ds-menu-online">
+                                <li class="dashboard-template">
+                                    <a href="#" class="view-link"></a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-table fa-fw"></i>Historical Data<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level" id="ds-menu-history">
+                               <li class="dashboard-template">
+                                   <a href="#" class="view-link"></a>
+                               </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-line-chart fa-fw"></i>Statistics online<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level" id="so-menu">
+                                <li class="dashboard-template">
+                                    <a href="#" class="view-link"></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-wrench fa-fw"></i>Management<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level" id="mng-menu">
+                                <li class="dashboard-template">
+                                    <a href="#" class="view-link"></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+
+            <!-- /.navbar-static-side -->
+        </nav>
+        <div id="page-wrapper" principal-view></div>
+
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+    <script src="js/lib/context.js"></script>
+    <!-- Refresh images   -->
+    <script src="js/lib/jquery-2.1.4.min.js"></script>
+
+
+    <!-- jQuery extensions -->
+    <script src="js/lib/jquery.flot.min.js"></script>
+    <script src="js/lib/jquery.flot.time.min.js"></script>
+    <script src="js/lib/jquery.ui.position.js" type="text/javascript"></script>
+
+
+    <script src="js/lib/reconnecting-websocket.js"></script>
+
+
+    <script src="js/lib/sugar-1.4.1.min.js"></script>
+    <script src="js/lib/smoothie.js"></script>
+    <script src="js/lib/chroma.min.js"></script>
+
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/lib/bootstrap.min.js"></script>
+    <!-- Online source -->
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"></script>-->
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="js/plugins/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <!--<script src="js/plugins/morris/raphael.min.js"></script>-->
+    <!--<script src="js/plugins/morris/morris.min.js"></script>-->
+    <!--<script src="js/plugins/morris/morris-data.js"></script>-->
+
+    <!-- EJS renders -->
+    <script src="js/lib/ejs_production.js"></script>
+
+
+    <!-- Self code -->
+    <script src="js/logics/OnlineLogic.js"></script>
+    <script src="js/logics/MuninHistory.js"></script>
+    <script src="js/logics/StatisticOnline.js"></script>
+    <script src="js/logics/Management.js"></script>
+    <script src="js/parseProperties.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/viewsLogic.js"></script>
+
+
+    <script>
+        /*CUSTOM THEME JavaScript*/
+        $(function() {
+            $('#side-menu').metisMenu();
+
+        });
+
+        //Loads the correct sidebar on window load,
+        //collapses the sidebar on window resize.
+        // Sets the min-height of #page-wrapper to window size
+        $(function() {
+            $(window).bind("load resize", function() {
+                topOffset = 50;
+                width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width;
+                if (width < 768) {
+                    $('div.navbar-collapse').addClass('collapse')
+                    topOffset = 100; // 2-row-menu
+                } else {
+                    $('div.navbar-collapse').removeClass('collapse')
+                }
+
+                height = (this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height;
+                height = height - topOffset;
+                if (height < 1) height = 1;
+                if (height > topOffset) {
+                    $("#page-wrapper").css("min-height", (height) + "px");
+                }
+            })
+        })
+
+    </script>
+
+</body>
+
+</html>

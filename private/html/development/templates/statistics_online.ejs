@@ -1,0 +1,65 @@
+<!--
+  ~ Copyright (c) 2015 Center for Open Middleware
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header view-title" id="so-title">{{ title }}</h1>
+    </div>
+</div>
+
+<!-- Commands-->
+<div id="so-command-interface" style="display:none" class="row">
+    <img src="img/FlowTraffic.jpg" width="100%" height="75%">
+    <div class="col-lg-3 col-xs-3 col-sm-3 col-md-3">
+      <input type="text" id="so-ip1" class="form-control" style="text-align:center" placeholder="IP1" />
+    </div>
+    <div class="col-lg-2 col-xs-2 col-sm-2 col-md-2">
+      <input type="text" id="so-port1" class="form-control" style="text-align:center" placeholder="PORT1" />
+    </div>
+    <div class="col-lg-2 col-xs-2 col-sm-2 col-md-2">
+        <select id="so-tcp-udp" name="so-tcp-udp" class="form-control" placeholder="select protocol">
+            <option value="ip" selected>IP</option>
+            <option value="tcp">TCP</option>
+            <option value="udp">UDP</option>
+        </select>
+    </div>
+    <div class="col-lg-3 col-xs-3 col-sm-3 col-md-3">
+      <input type="text" id="so-ip2" class="form-control" style="text-align:center" placeholder="IP2" />
+    </div>
+    <div class="col-lg-2 col-xs-2 col-sm-2 col-md-2">
+      <input type="text" id="so-port2" class="form-control" style="text-align:center" placeholder="PORT2" />
+    </div>
+    <div class="col-lg-12 col-xs-12 col-sm-12 col-md-12" style="margin: 10px">
+      <center>
+        <div class="btn-default btn" id="so-button">ACCEPT</div>
+      </center>
+    </div>
+</div>
+<!-- End commands-->
+
+<div class="row" id="so-graphs" contextmenu="">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 dashboard-template so-graph-div">
+        <h3 class="so-graph-title"></h3>
+        <div class="so-flot-element"></div>
+        <div class='so-yaxis-label so-axis-label'></div>
+        <div class="so-legend">
+            <div class="dashboard-template so-legend-entry row">
+                <div class="so-graph-legend-key col-lg-6 col-xs-6 col-sm-6 col-md-6"></div>
+                <div class="so-graph-legend-value col-lg-6 col-xs-6 col-sm-6 col-md-6"></div>
+            </div>
+        </div>
+    </div>
+</div>
