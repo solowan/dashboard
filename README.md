@@ -9,15 +9,15 @@ SoloWAN is a project of the Center for Open Middleware (COM) of Universidad Poli
 
 The wiki include the documentation of the dashboard. The table of contents is the following:
 
-1. [Home](https://github.com/centeropenmiddleware/solowan-dashboard/wiki)
+1. [Home](https://github.com/solowan/dashboard/wiki)
 
 1. Installation
 
-    2. [Optimizers](https://github.com/centeropenmiddleware/solowan-dashboard/wiki/Installation%20Optimizers)
-    2. [Server](https://github.com/centeropenmiddleware/solowan-dashboard/wiki/Installation%20Server)
+    2. [Optimizers](https://github.com/solowan/dashboard/wiki/Installation%20Optimizers)
+    2. [Server](https://github.com/solowan/dashboard/wiki/Installation%20Server)
 
-1. [Views](https://github.com/centeropenmiddleware/solowan-dashboard/wiki/Views)
+1. [Views](https://github.com/solowan/dashboard/wiki/Views)
 
-1. [License](https://github.com/centeropenmiddleware/solowan-dashboard/wiki/License)
+1. [License](https://github.com/solowan/dashboard/wiki/License)
 
-1. [References](https://github.com/centeropenmiddleware/solowan-dashboard/wiki/References)
+1. [References](https://github.com/solowan/dashboard/wiki/References)
